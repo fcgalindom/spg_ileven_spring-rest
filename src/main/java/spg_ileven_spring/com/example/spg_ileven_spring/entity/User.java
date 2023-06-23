@@ -1,37 +1,42 @@
 package spg_ileven_spring.com.example.spg_ileven_spring.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+// User.java
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@Table (name = "User")
+@Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
-    @Column(name = "id_user" , nullable = false , unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(length = 50 )
-    private  String name;
-    @Column (length =  50)
-    private  String email;
 
-    private LocalDate birthDate;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL , fetch = FetchType.EAGER)
-    @JsonManagedReference  //para que sirva en la api
-    private List <Post> posts = new ArrayList<>();
+    private String name;
 
+    private String email;
+
+    // Constructor, getters y setters
+
+    @ManyToOne
+    @JoinColumn(name = "user_type_id")
+    private UserType userType;
     public User() {
+        // Constructor sin argumentos requerido por JPA
     }
 
-    public User(String name, String email, LocalDate birthDate) {
+    public User(String name, String email, UserType userType) {
         this.name = name;
         this.email = email;
-        this.birthDate = birthDate;
+        this.userType = userType;
+    }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
     }
 
     public Long getId() {
@@ -54,34 +59,7 @@ public class User {
         return email;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", birthDate=" + birthDate +
-                ", posts=" + posts +
-                '}';
-    }
-
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public List<Post> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(List<Post> posts) {
-        this.posts = posts;
     }
 }
