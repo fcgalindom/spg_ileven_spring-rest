@@ -18,8 +18,8 @@ public class User {
 
     // Constructor, getters y setters
 
-    @ManyToOne
-    @JoinColumn(name = "user_type_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "type_user_id")
     private UserType userType;
     public User() {
         // Constructor sin argumentos requerido por JPA

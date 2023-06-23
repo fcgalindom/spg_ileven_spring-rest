@@ -2,6 +2,7 @@ package spg_ileven_spring.com.example.spg_ileven_spring.controller;
 
 // UserController.java
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import spg_ileven_spring.com.example.spg_ileven_spring.entity.User;
 import spg_ileven_spring.com.example.spg_ileven_spring.entity.UserType;
@@ -18,8 +19,13 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userRepository.save(user);
+    public ResponseEntity<String> createUser(@RequestBody User user) {
+
+        if (user.getUserType() == null) {
+            return ResponseEntity.badRequest().body("TypeUser is required");
+        }
+        userRepository.save(user);
+        return ResponseEntity.ok("User created successfully");
     }
 
     @GetMapping
@@ -51,10 +57,13 @@ public class UserController {
     public void deleteUser(@PathVariable Long id) {
         userRepository.deleteById(id);
     }
-    @GetMapping("/user-type/{userTypeId}")
-    public List<User> getUsersByUserType(@PathVariable Long userTypeId) {
-        UserType userType = new UserType();
-        userType.setId(userTypeId);
-        return userRepository.findByUserType(userType);
+    @GetMapping("/byType/{typeId}")
+    public ResponseEntity<List<User>> getUsersByType(@PathVariable Long typeId) {
+        List<User> users = userRepository.findByUserType_Id(typeId);
+
+        // Puedes realizar otras operaciones con los usuarios si es necesario
+        return ResponseEntity.ok(users);
     }
+
+
 }
